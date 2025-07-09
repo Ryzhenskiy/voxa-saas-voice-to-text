@@ -1,29 +1,35 @@
-'use client';
+import { db } from '@/lib/db';
 
-import { useParams } from 'next/navigation';
+interface PageProps {
+  params: Promise<{ voiceId: string }>;
+}
 
-const mockHistory = [
-  { id: '1', title: 'Meeting with Product Team' },
-  { id: '2', title: 'Voice Note – July 7' },
-  { id: '3', title: 'Client Call Summary' },
-];
+export default async function ChatDetailPage({ params }: PageProps) {
+  const { voiceId } = await params;
 
-export default function ChatDetailPage() {
-  const { voiceId } = useParams();
+  if (!voiceId) {
+    throw new Error('ID is required');
+  }
 
-  const chat = mockHistory.find((c) => c.id === voiceId);
+  const audio = await db.transcription.findUnique({
+    where: { id: voiceId },
+  });
 
-  if (!chat) {
+  if (!audio) {
     return <div>Not found</div>;
   }
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
-      <h1 className="text-3xl font-bold">{chat.title}</h1>
-      <p className="text-neutral-400">
-        This is the transcription detail page for voice note &quot;{chat.title}
-        &quot;.
-      </p>
+    <div className="text-center ">
+      <h1 className="text-3xl font-bold">{audio.title}</h1>
+      {/* 🎧 Audio Player */}
+      {audio.audioUrl && (
+        <audio controls className="w-full mt-4">
+          <source src={audio.audioUrl} type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
+      )}
+      <p className="text-neutral-400">{audio.text}</p>
     </div>
   );
 }
