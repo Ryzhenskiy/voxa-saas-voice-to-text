@@ -60,8 +60,6 @@ export async function POST() {
 
     return NextResponse.json({ url });
   } catch (error) {
-    return {
-      error: 'Failed to create Stripe session',
-    };
+    return NextResponse.json({ error }, { status: 500 });
   }
 }
