@@ -7,7 +7,11 @@ import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { useProModalStore } from '@/hooks/use-pro-modal';
 
-export default function UploadForm() {
+interface UploadFormProps {
+  hasVoices: boolean;
+}
+
+export default function UploadForm({ hasVoices }: UploadFormProps) {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -17,31 +21,31 @@ export default function UploadForm() {
   const handleUpload = async () => {
     if (!file) return;
 
-    setLoading(true);
-
-    const formData = new FormData();
-    formData.append('audio', file);
-
-    const res = await fetch('/api/transcribe', {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (!res.ok) {
-      setError('Transcribe error');
-    }
-
-    if (res.redirected) {
-      router.push(res.url);
-      router.refresh();
-    }
-
-    if (res.status === 402) {
+    if (!hasVoices) {
       proModal.onOpen();
-    }
+    } else {
+      setLoading(true);
 
-    setLoading(false);
-    setFile(null);
+      const formData = new FormData();
+      formData.append('audio', file);
+
+      const res = await fetch('/api/transcribe', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!res.ok) {
+        setError('Transcribe error');
+      }
+
+      if (res.redirected) {
+        router.push(res.url);
+        router.refresh();
+      }
+
+      setLoading(false);
+      setFile(null);
+    }
   };
 
   return (

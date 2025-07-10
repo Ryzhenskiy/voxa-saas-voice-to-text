@@ -24,6 +24,12 @@ model Transcription {
   createdAt DateTime @default(now())
 }
 
+model User {
+  id        String   @id
+  email     String
+  createdAt DateTime @default(now())
+}
+
 model UserLimit {
   id        String   @id @default(uuid())
   userId     String  @unique

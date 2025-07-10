@@ -1,6 +1,5 @@
 import { Mic } from 'lucide-react';
-import { redirect } from 'next/navigation';
-import { UserButton } from '@clerk/nextjs';
+import { RedirectToSignIn, UserButton } from '@clerk/nextjs';
 import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs/server';
 import Sidebar from '../_components/sidebar';
@@ -16,7 +15,7 @@ export default async function DashboardLayout({
   const isPro = await checkSubscription();
 
   if (!userId) {
-    return redirect('/sign-in');
+    return RedirectToSignIn;
   }
 
   const transcriptions = await db.transcription.findMany({

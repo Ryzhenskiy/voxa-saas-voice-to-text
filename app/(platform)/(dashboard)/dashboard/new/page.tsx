@@ -1,8 +1,7 @@
-'use client';
-
 import UploadForm from '../../../../../components/upload-form';
-
-export default function NewTranscriptionPage() {
+import { hasAvailableVoices } from '@/lib/user-limit';
+export default async function NewTranscriptionPage() {
+  const hasVoices = await hasAvailableVoices();
   return (
     <div className="text-center space-y-6 max-w-xl mx-auto">
       <h1 className="text-3xl font-bold">Ready to transcribe?</h1>
@@ -10,7 +9,7 @@ export default function NewTranscriptionPage() {
         Upload your audio and get the magic transcript.
       </p>
 
-      <UploadForm />
+      <UploadForm hasVoices={hasVoices} />
     </div>
   );
 }
