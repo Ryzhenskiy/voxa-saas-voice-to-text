@@ -9,9 +9,10 @@ import { useProModalStore } from '@/hooks/use-pro-modal';
 
 interface UploadFormProps {
   hasVoices: boolean;
+  isPro: boolean;
 }
 
-export default function UploadForm({ hasVoices }: UploadFormProps) {
+export default function UploadForm({ hasVoices, isPro }: UploadFormProps) {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,7 +22,7 @@ export default function UploadForm({ hasVoices }: UploadFormProps) {
   const handleUpload = async () => {
     if (!file) return;
 
-    if (!hasVoices) {
+    if (!hasVoices && !isPro) {
       proModal.onOpen();
     } else {
       setLoading(true);

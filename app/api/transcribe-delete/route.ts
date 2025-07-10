@@ -20,7 +20,7 @@ export async function PUT(req: Request) {
     }
 
     if (!isPro) {
-      decreaseAvailableCount();
+      await decreaseAvailableCount();
     }
     await db.transcription.delete({
       where: {
